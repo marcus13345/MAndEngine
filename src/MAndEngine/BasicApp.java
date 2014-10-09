@@ -1,4 +1,4 @@
-package MAndApps;
+package MAndEngine;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

@@ -1,4 +1,4 @@
-package MAndApps;
+package MAndEngine;
 
 
 import java.awt.AlphaComposite;
@@ -7,9 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import static MAndApps.Engine.mouseX;
-import static MAndApps.Engine.mouseY;
-import static MAndApps.Engine.mouse;
+import static MAndEngine.Engine.mouse;
+import static MAndEngine.Engine.mouseX;
+import static MAndEngine.Engine.mouseY;
 
 public class Button {
 	private int clickLevel = 0;

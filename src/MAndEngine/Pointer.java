@@ -1,4 +1,4 @@
-package MAndApps;
+package MAndEngine;
 
 public class Pointer<E> {
 	private volatile E object;

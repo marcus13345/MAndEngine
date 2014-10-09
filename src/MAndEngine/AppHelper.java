@@ -1,4 +1,4 @@
-package MAndApps;
+package MAndEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
