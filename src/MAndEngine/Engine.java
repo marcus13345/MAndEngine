@@ -1,17 +1,25 @@
 package MAndEngine;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
 import javax.swing.*;
 
-public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener {
+public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener, ContainerListener, ComponentListener {
 
 	/**
 	 * to track the x and y
@@ -115,7 +123,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * SOMETHING NEW I JUST DID NOW GUISE!
 	 */
-	private static Image buffer;
+	private static BufferedImage buffer;
 	private static Graphics2D g2;
 
 	/**
@@ -145,6 +153,11 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		addKeyListener(this);
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		frame.addContainerListener(this);
+		frame.addComponentListener(this);
+		
 		requestFocus();
 
 		if (showLoading)
@@ -155,10 +168,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		appInitializer = new AppHelper(classes);
 		Thread thread = new Thread(appInitializer);
 		thread.start();
-
-		// we need to make a frame and such first
-		// more on that later
-		createBuffer();
 
 		// while its faffing about, RENDER THINGS AND MAKE A LOADY THING
 		while (!appInitializer.getDone() || !(progress >= 0.999)) {
@@ -175,7 +184,9 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		apps = appInitializer.getApps();
 
 		switchApps(0);
-
+		
+		createBuffer();
+		
 	}
 
 	//TODO at some point redo this to allow frame drop
@@ -220,7 +231,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * makes a buffer and stuff, called with new windows and things. MOVE ALONG
 	 */
 	private static void createBuffer() {
-		buffer = (Image) (new BufferedImage(WIDTH, HEIGHT, BufferedImage.TRANSLUCENT));
+		buffer = (new BufferedImage(WIDTH, HEIGHT, BufferedImage.TRANSLUCENT));
 		g2 = (Graphics2D) buffer.getGraphics();
 	}
 
@@ -230,6 +241,14 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	// thank you my minions ~Future Marcus
 	public void update(Graphics g) {
 		// Graphics g2 = buffer.getGraphics();
+		
+		if(buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
+			System.out.println("bork " + buffer.getWidth());
+			System.out.println("bork " + WIDTH);
+			
+			createBuffer();
+		}
+		
 		paint(g2);
 		g.drawImage(buffer, 0, 0, null);
 	}
@@ -257,7 +276,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			
 			// because we now use the ONE buffer system... yeah
 			// lets do something about thaaaaaaaaat...
-			createBuffer();
 
 			return true;
 
@@ -433,5 +451,46 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		mouse = false;
+	}
+
+	@Override
+	public void componentAdded(ContainerEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentRemoved(ContainerEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		setSize(getPreferredSize());
+		System.out.println("HEIGHT: " + HEIGHT);
+		System.out.println("WIDTH:  " + WIDTH);
+		WIDTH = getSize().width;
+		HEIGHT = getSize().height;
+		createBuffer();
+		apps[app].resized(WIDTH, HEIGHT);
+	}
+
+	@Override
+	public void componentShown(ComponentEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

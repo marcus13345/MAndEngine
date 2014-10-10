@@ -92,4 +92,6 @@ public abstract interface BasicApp {
      * @return
      */
 	public abstract boolean visibleInMenu();
+
+	public abstract void resized(int width, int height);
 }
