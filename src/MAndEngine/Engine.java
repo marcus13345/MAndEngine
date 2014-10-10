@@ -139,6 +139,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		// set up window
 		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		frame.add(this);
 		frame.pack();
