@@ -245,7 +245,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		if(buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
 			System.out.println("bork " + buffer.getWidth());
 			System.out.println("bork " + WIDTH);
-			
 			createBuffer();
 		}
 		

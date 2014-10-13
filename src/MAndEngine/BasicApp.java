@@ -94,4 +94,6 @@ public abstract interface BasicApp {
 	public abstract boolean visibleInMenu();
 
 	public abstract void resized(int width, int height);
+
+	public abstract void click();
 }
