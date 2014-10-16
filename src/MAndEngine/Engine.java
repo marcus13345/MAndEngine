@@ -444,6 +444,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		mouse = true;
+		apps[app].click();
 	}
 
 	@Override
