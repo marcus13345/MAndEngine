@@ -122,6 +122,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	/**
 	 * SOMETHING NEW I JUST DID NOW GUISE!
+	 * TODO properly document this?
 	 */
 	private static BufferedImage buffer;
 	private static Graphics2D g2;
@@ -133,7 +134,13 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	private static Engine staticMain;
 
 	/**
+	 * debug level.
+	 */
+	public static int debug = 0;
+	
+	/**
 	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT.
+	 * because this is a static engine, yeah
 	 */
 	public Engine(String[] classes, boolean showLoading) {
 
@@ -340,7 +347,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			g.setColor(Color.WHITE);
 
 			// show fps if debug level high enough
-			g.drawString("FPS: " + FPS, 20, 20);
+			if(debug > 0) g.drawString("FPS: " + FPS, 20, 20);
 			if (overclock)
 				g.drawString("Overclocking!", 20, 35);
 			g.setColor(Color.RED);
