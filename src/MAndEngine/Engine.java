@@ -19,7 +19,8 @@ import java.util.Stack;
 
 import javax.swing.*;
 
-public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener, ContainerListener, ComponentListener {
+public class Engine extends Canvas implements KeyListener, MouseMotionListener,
+		MouseListener, ContainerListener, ComponentListener {
 
 	/**
 	 * to track the x and y
@@ -61,7 +62,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * more framerate stuff, again, chill.
 	 */
-	private static long nextSecond = System.currentTimeMillis() + 1000, startTime = 0;
+	private static long nextSecond = System.currentTimeMillis() + 1000,
+			startTime = 0;
 
 	/**
 	 * if our current framerate is below our expected. its not directly
@@ -121,8 +123,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	public static boolean[] keys;
 
 	/**
-	 * SOMETHING NEW I JUST DID NOW GUISE!
-	 * TODO properly document this?
+	 * SOMETHING NEW I JUST DID NOW GUISE! TODO properly document this?
 	 */
 	private static BufferedImage buffer;
 	private static Graphics2D g2;
@@ -137,10 +138,10 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * debug level.
 	 */
 	public static int debug = 0;
-	
+
 	/**
-	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT.
-	 * because this is a static engine, yeah
+	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT. because this is a
+	 * static engine, yeah
 	 */
 	public Engine(String[] classes, boolean showLoading) {
 
@@ -164,7 +165,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		addMouseMotionListener(this);
 		frame.addContainerListener(this);
 		frame.addComponentListener(this);
-		
+
 		requestFocus();
 
 		if (showLoading)
@@ -184,20 +185,21 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			}
 			// this is the later part referred to by a few lines back
 			repaint();
-			progress += (appInitializer.getProgress() - progress) / ANIMATION_CONSTANT;
+			progress += (appInitializer.getProgress() - progress)
+					/ ANIMATION_CONSTANT;
 		}
 
 		// we done now, gather the loot.
 		apps = appInitializer.getApps();
 
 		switchApps(0);
-		
+
 		createBuffer();
-		
+
 	}
 
-	//TODO at some point redo this to allow frame drop
-	//if it gets laggy....
+	// TODO at some point redo this to allow frame drop
+	// if it gets laggy....
 	public void run() {
 
 		// REALLY????
@@ -224,7 +226,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			// FRAMERATE OVERCLOCKING AND SUCH, MOVE ALONG.
 			try {
 				if (!overclock)
-					Thread.sleep((long) Math.floor(sleepTime - (System.currentTimeMillis() - startTime)));
+					Thread.sleep((long) Math.floor(sleepTime
+							- (System.currentTimeMillis() - startTime)));
 				else
 					Thread.sleep(0);
 				lag = false;
@@ -248,13 +251,13 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	// thank you my minions ~Future Marcus
 	public void update(Graphics g) {
 		// Graphics g2 = buffer.getGraphics();
-		
-		if(buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
+
+		if (buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
 			System.out.println("bork " + buffer.getWidth());
 			System.out.println("bork " + WIDTH);
 			createBuffer();
 		}
-		
+
 		paint(g2);
 		g.drawImage(buffer, 0, 0, null);
 	}
@@ -277,9 +280,9 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			log("setting window properties");
 			setWindowProperties(apps[app]);
 			log("Started up " + apps[app].getTitle());
-			
+
 			frame.pack();
-			
+
 			// because we now use the ONE buffer system... yeah
 			// lets do something about thaaaaaaaaat...
 
@@ -297,7 +300,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param app
 	 */
 	private static void setWindowProperties(BasicApp app) {
-		setWindowProperties(app.getResolution(), app.getFramerate(), app.getResizable());
+		setWindowProperties(app.getResolution(), app.getFramerate(),
+				app.getResizable());
 	}
 
 	/**
@@ -307,7 +311,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param fps
 	 * @param resizable
 	 */
-	private static void setWindowProperties(Dimension dimension, int fps, boolean resizable) {
+	private static void setWindowProperties(Dimension dimension, int fps,
+			boolean resizable) {
 		frame.setResizable(resizable);
 		staticMain.setSize(dimension);
 		frame.pack();
@@ -329,8 +334,10 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	private static void render(Graphics2D g) {
 
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setFont(defaultFont);
 
@@ -347,7 +354,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			g.setColor(Color.WHITE);
 
 			// show fps if debug level high enough
-			if(debug > 0) g.drawString("FPS: " + FPS, 20, 20);
+			if (debug > 0)
+				g.drawString("FPS: " + FPS, 20, 20);
 			if (overclock)
 				g.drawString("Overclocking!", 20, 35);
 			g.setColor(Color.RED);
@@ -355,9 +363,11 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 				g.fillOval(10, 10, 10, 10);
 
 			g.setColor(Color.WHITE);
-			if (!(log.size() == 0))
-				for (int i = log.size() - 1; i >= 0; i--)
-					log.elementAt(i).render(g, WIDTH - 200, HEIGHT - 10 - (i * 12));
+			if (debug > 0)
+				if (!(log.size() == 0))
+					for (int i = log.size() - 1; i >= 0; i--)
+						log.elementAt(i).render(g, WIDTH - 200,
+								HEIGHT - 10 - (i * 12));
 		} catch (Exception e) {
 			g.setFont(largerFont);
 			g.setColor(Color.BLACK);
@@ -409,27 +419,27 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		apps[app].keyReleased(e);
 		keys[e.getKeyCode()] = false;
 	}
-	
+
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
-	
+
 	public static void exit() {
 		frame.dispose();
 		System.exit(0);
 	}
-	
+
 	private static void setFramerate(int fps) {
 		frameSync = fps;
 		sleepTime = 1000 / frameSync;
 	}
-	
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		mouseX = e.getX();
 		mouseY = e.getY();
 	}
-	
+
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mouseX = e.getX();
@@ -462,25 +472,25 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void componentAdded(ContainerEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void componentRemoved(ContainerEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -497,6 +507,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
