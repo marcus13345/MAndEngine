@@ -19,8 +19,7 @@ import java.util.Stack;
 
 import javax.swing.*;
 
-public class Engine extends Canvas implements KeyListener, MouseMotionListener,
-		MouseListener, ContainerListener, ComponentListener {
+public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener, ContainerListener, ComponentListener {
 
 	/**
 	 * to track the x and y
@@ -62,8 +61,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 	/**
 	 * more framerate stuff, again, chill.
 	 */
-	private static long nextSecond = System.currentTimeMillis() + 1000,
-			startTime = 0;
+	private static long nextSecond = System.currentTimeMillis() + 1000, startTime = 0;
 
 	/**
 	 * if our current framerate is below our expected. its not directly
@@ -185,8 +183,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 			}
 			// this is the later part referred to by a few lines back
 			repaint();
-			progress += (appInitializer.getProgress() - progress)
-					/ ANIMATION_CONSTANT;
+			progress += (appInitializer.getProgress() - progress) / ANIMATION_CONSTANT;
 		}
 
 		// we done now, gather the loot.
@@ -226,8 +223,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 			// FRAMERATE OVERCLOCKING AND SUCH, MOVE ALONG.
 			try {
 				if (!overclock)
-					Thread.sleep((long) Math.floor(sleepTime
-							- (System.currentTimeMillis() - startTime)));
+					Thread.sleep((long) Math.floor(sleepTime - (System.currentTimeMillis() - startTime)));
 				else
 					Thread.sleep(0);
 				lag = false;
@@ -300,8 +296,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 	 * @param app
 	 */
 	private static void setWindowProperties(BasicApp app) {
-		setWindowProperties(app.getResolution(), app.getFramerate(),
-				app.getResizable());
+		setWindowProperties(app.getResolution(), app.getFramerate(), app.getResizable());
 	}
 
 	/**
@@ -311,8 +306,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 	 * @param fps
 	 * @param resizable
 	 */
-	private static void setWindowProperties(Dimension dimension, int fps,
-			boolean resizable) {
+	private static void setWindowProperties(Dimension dimension, int fps, boolean resizable) {
 		frame.setResizable(resizable);
 		staticMain.setSize(dimension);
 		frame.pack();
@@ -334,10 +328,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 
 	private static void render(Graphics2D g) {
 
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g.setFont(defaultFont);
 
@@ -366,8 +358,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener,
 			if (debug > 0)
 				if (!(log.size() == 0))
 					for (int i = log.size() - 1; i >= 0; i--)
-						log.elementAt(i).render(g, WIDTH - 200,
-								HEIGHT - 10 - (i * 12));
+						log.elementAt(i).render(g, WIDTH - 200, HEIGHT - 10 - (i * 12));
 		} catch (Exception e) {
 			g.setFont(largerFont);
 			g.setColor(Color.BLACK);
