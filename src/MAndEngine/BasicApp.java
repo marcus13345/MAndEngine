@@ -96,4 +96,6 @@ public abstract interface BasicApp {
 	public abstract void resized(int width, int height);
 
 	public abstract void click();
+	
+	
 }
