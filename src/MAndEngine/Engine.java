@@ -82,6 +82,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * IN CFG.
 	 */
 	private static int WIDTH = 800, HEIGHT = 600, app = 0;
+	private static int BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
 
 	/**
 	 * this bit is important. its the array of apps that we reference later on.
@@ -199,6 +200,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		switchApps(0);
 
+		BUFFER_HEIGHT = HEIGHT*(retina?2:1);
+		BUFFER_WIDTH = WIDTH*(retina?2:1);
 		createBuffer();
 
 	}
@@ -245,7 +248,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * makes a buffer and stuff, called with new windows and things. MOVE ALONG
 	 */
 	private void createBuffer() {
-		buffer = (new BufferedImage(WIDTH*(retina?2:1), HEIGHT*(retina?2:1), BufferedImage.TRANSLUCENT));
+		buffer = (new BufferedImage(BUFFER_WIDTH, BUFFER_HEIGHT, BufferedImage.TRANSLUCENT));
 		g2 = (Graphics2D) buffer.getGraphics();
 	}
 
@@ -256,12 +259,13 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	public void update(Graphics g) {
 		// Graphics g2 = buffer.getGraphics();
 
+		/*
 		if (buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
 			System.out.println("bork " + buffer.getWidth());
 			System.out.println("bork " + WIDTH);
 			createBuffer();
 		}
-
+*/
 		paint(g2);
 		g.drawImage(buffer, 0, 0, WIDTH, HEIGHT, null);
 	}
@@ -435,36 +439,42 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
+		updateMouse(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
+		updateMouse(e);
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent e) {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		mouse = true;
+	public void mousePressed(MouseEvent e) {
+		updateMouse(e);
 		apps[app].click();
+		mouse = true;
+	}
+	
+	private void updateMouse(MouseEvent e) {
+		mouseX = (int)(((double)e.getX() / WIDTH)*BUFFER_WIDTH);
+		mouseY = (int)(((double)e.getY() / HEIGHT)*BUFFER_HEIGHT);
+		mouse = false;
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent e) {
+		updateMouse(e);
 		mouse = false;
 	}
 
