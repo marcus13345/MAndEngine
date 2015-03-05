@@ -138,13 +138,21 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	public static int debug = 0;
 
 	/**
+	 * because retina support
+	 */
+	private final boolean retina;
+	
+	/**
 	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT. because this is a
 	 * static engine, yeah
+	 * @param retina 
 	 */
-	public Engine(String[] classes, boolean showLoading) {
+	public Engine(String[] classes, boolean showLoading, boolean retina) {
 
 		// frame.setVisible(true);
 
+		this.retina = retina;
+		
 		// set static object
 		staticMain = this;
 
@@ -236,8 +244,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * makes a buffer and stuff, called with new windows and things. MOVE ALONG
 	 */
-	private static void createBuffer() {
-		buffer = (new BufferedImage(WIDTH, HEIGHT, BufferedImage.TRANSLUCENT));
+	private void createBuffer() {
+		buffer = (new BufferedImage(WIDTH*(retina?2:1), HEIGHT*(retina?2:1), BufferedImage.TRANSLUCENT));
 		g2 = (Graphics2D) buffer.getGraphics();
 	}
 
@@ -255,7 +263,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		}
 
 		paint(g2);
-		g.drawImage(buffer, 0, 0, null);
+		g.drawImage(buffer, 0, 0, WIDTH, HEIGHT, null);
 	}
 
 	/**
