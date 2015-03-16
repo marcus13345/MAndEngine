@@ -7,11 +7,9 @@ import java.util.Formatter;
 import java.util.Scanner;
 
 /**
- * to note, will not work on Mac yet.
- * 
- * edit: WILL WORK ON MAC MOTHER FUCKERS
- * 
- * edit: idek if this will work on macs because app data...
+ * helpful little class that creates a string variable that gets saved in application 
+ * data. when you write to it, it gets saved as that file. and yes it only works on
+ * windows because i used backslashes and not the respective seperative character.
  * 
  * @author Marcus
  * 
@@ -62,8 +60,8 @@ public class Variable {
 		String str = getValueFromFile();
 
 		// if we could not load a value from the file
-		// AKA didnt fucking exist.
-		// ORRRRRRR if you were an ass, and forced
+		// AKA didnt exist.
+		// ORRRRRRR if you forced
 		// the value.
 		if (str == null) {
 			this.value = value;
@@ -113,9 +111,6 @@ public class Variable {
 			f.format("" + value);
 			f.close();
 		} catch (Exception e) {
-			// if(weArriveHere){
-			// we.are("fucked");
-			// }
 			e.printStackTrace();
 		}
 	}
@@ -134,19 +129,15 @@ public class Variable {
 	private void createFile() {
 		//make the directory because god knows, java can't do that for us
 		//when we say we want a new file in an unknown folder noooooo....
-		//jackass java
-		File f = new File(fileDir);
-		f.mkdirs();
+		File file = new File(fileDir);
+		file.mkdirs();
 		
 		//no onto the file itself. create the object
-		f = new File(filePath);
+		file = new File(filePath);
 		try {
 			//hopefully make the file...
-			f.createNewFile();
+			file.createNewFile();
 		} catch (IOException e) {
-			// if(weArriveHere){
-			// we.are("fucked");
-			// }
 			e.printStackTrace();
 		}
 	}
