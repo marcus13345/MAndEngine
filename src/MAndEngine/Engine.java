@@ -82,7 +82,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * IN CFG.
 	 */
 	private static int WIDTH = 800, HEIGHT = 600, app = 0;
-	private static int BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
+	public  static int BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
 
 	/**
 	 * this bit is important. its the array of apps that we reference later on.
@@ -129,9 +129,10 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	/**
 	 * the main Main object but staticed so we can like use it from that static
-	 * context. its not final because its static but don't change it.
+	 * context. its not final because its static but don't change it.<br/>
+	 * public until i figure out how to work with the changing resolution.
 	 */
-	private static Engine staticMain;
+	public static Engine staticMain;
 
 	/**
 	 * debug level.
@@ -278,16 +279,9 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 */
 	public static boolean switchApps(int i) {
 		try {
-			log("pausing " + apps[app].getTitle());
-			apps[app].pauseApp();
 			app = i;
-			log("initializing " + apps[app].getTitle());
-			apps[app].initialize();
-			log("resuming " + apps[app].getTitle());
-			apps[app].resumeApp();
-			log("setting window properties");
 			setWindowProperties(apps[app]);
-			log("Started up " + apps[app].getTitle());
+			apps[app].updateDimensions(BUFFER_WIDTH, BUFFER_HEIGHT);
 
 			frame.pack();
 
@@ -366,11 +360,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			if (lag)
 				g.fillOval(10, 10, 10, 10);
 
-			g.setColor(Color.WHITE);
-			if (debug > 0)
-				if (!(log.size() == 0))
-					for (int i = log.size() - 1; i >= 0; i--)
-						log.elementAt(i).render(g, WIDTH - 200, HEIGHT - 10 - (i * 12));
 		} catch (Exception e) {
 			g.setFont(largerFont);
 			g.setColor(Color.BLACK);
@@ -388,24 +377,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	private void tick() {
 		apps[app].tick();
-		for (int i = 0; i < log.size(); i++)
-			log.elementAt(i).tick();
-
-		int i = 0;
-		while (i < log.size()) {
-			if (!log.elementAt(i).getAlive())
-				log.remove(i);
-			else
-				i++;
-		}
-
-		while (log.size() > 10) {
-			log.pop();
-		}
-	}
-
-	public static void log(String s) {
-		log.insertElementAt(new LogItem(s, 100), 0);
 	}
 
 	@Override
@@ -505,8 +476,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void componentResized(ComponentEvent e) {
 		setSize(getPreferredSize());
-		System.out.println("HEIGHT: " + HEIGHT);
-		System.out.println("WIDTH:  " + WIDTH);
 		WIDTH = getSize().width;
 		HEIGHT = getSize().height;
 		createBuffer();

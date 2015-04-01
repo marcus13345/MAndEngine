@@ -97,5 +97,6 @@ public abstract interface BasicApp {
 
 	public abstract void click();
 	
+	public abstract void updateDimensions(int width, int height);
 	
 }
