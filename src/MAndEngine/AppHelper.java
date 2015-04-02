@@ -46,6 +46,7 @@ public class AppHelper implements Runnable{
                 //one of us...
                 if(obj instanceof BasicApp) {
                     apps.add((BasicApp)(obj));
+                    ((BasicApp)obj).initialize();
                 }
                 progress++;
             }

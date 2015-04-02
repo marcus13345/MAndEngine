@@ -73,12 +73,6 @@ public abstract interface BasicApp {
     public abstract Color getColor();
 
     /**
-     * the framerate that this should be run at.
-     * @return
-     */
-    public abstract int getFramerate();
-
-    /**
      * should this window be resizable
      * @return
      */
