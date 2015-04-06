@@ -22,6 +22,13 @@ import javax.swing.*;
 public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener, ContainerListener, ComponentListener {
 
 	/**
+	 * 
+	 */
+	private static double tickTime = 0;
+	public static double timeScale = 1;
+	public static double deltaTime = 0;
+	
+	/**
 	 * to track the x and y
 	 */
 	public static int mouseX = 0, mouseY = 0;
@@ -41,16 +48,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * object thing that will initialize our apps for us, then give us an array!
 	 */
 	private static AppHelper appInitializer;
-
-	/**
-	 * AER WE SUPER SPEEDING?!?!?
-	 */
-	private static boolean overclock = false;
-
-	/**
-	 * current framerate and time required to sleep to achieve that framerate.
-	 */
-	private static int frameSync = 50, sleepTime = 1000 / frameSync;
 
 	/**
 	 * variables to track the fps, DON'T WORRY ABOUT IT, PAST YOU HAS YOU
@@ -216,6 +213,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		frame.setVisible(true);
 
+		long nanos = System.nanoTime();
+		
 		// now we do stuff.
 		while (running) {
 			// FPS STUFF WORRY NOT, ITS ALL GOOD. MOVE ALONG.
@@ -227,21 +226,13 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			}
 			framesInCurrentSecond++;
 
-			// tick stuff
-			tick();
-			// paint the same stuff
 			repaint();
-
-			// FRAMERATE OVERCLOCKING AND SUCH, MOVE ALONG.
-			try {
-				if (!overclock)
-					Thread.sleep((long) Math.floor(sleepTime - (System.currentTimeMillis() - startTime)));
-				else
-					Thread.sleep(0);
-				lag = false;
-			} catch (Exception e) {
-				lag = true;
-			}
+			tick();
+			tickTime = (System.nanoTime() - nanos)/1000d;
+			deltaTime = tickTime * timeScale;
+			nanos = System.nanoTime();
+			
+			//no sleeping because we now operate on delta time.
 		}
 	}
 
@@ -302,7 +293,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param app
 	 */
 	private static void setWindowProperties(BasicApp app) {
-		setWindowProperties(app.getResolution(), app.getFramerate(), app.getResizable());
+		setWindowProperties(app.getResolution(), app.getResizable());
 	}
 
 	/**
@@ -312,14 +303,13 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param fps
 	 * @param resizable
 	 */
-	private static void setWindowProperties(Dimension dimension, int fps, boolean resizable) {
+	private static void setWindowProperties(Dimension dimension, boolean resizable) {
 		frame.setResizable(resizable);
 		staticMain.setSize(dimension);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		WIDTH = dimension.width;
 		HEIGHT = dimension.height;
-		setFramerate(fps);
 		frame.setResizable(resizable);
 
 	}
@@ -354,8 +344,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			// show fps if debug level high enough
 			if (debug > 0)
 				g.drawString("FPS: " + FPS, 20, 20);
-			if (overclock)
-				g.drawString("Overclocking!", 20, 35);
 			g.setColor(Color.RED);
 			if (lag)
 				g.fillOval(10, 10, 10, 10);
@@ -382,9 +370,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		apps[app].keyPressed(e);
-		if (e.getKeyCode() == KeyEvent.VK_O && keys[KeyEvent.VK_CONTROL]) {
-			overclock = !overclock;
-		}
+		
 		keys[e.getKeyCode()] = true;
 	}
 
@@ -401,11 +387,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	public static void exit() {
 		frame.dispose();
 		System.exit(0);
-	}
-
-	private static void setFramerate(int fps) {
-		frameSync = fps;
-		sleepTime = 1000 / frameSync;
 	}
 
 	@Override
