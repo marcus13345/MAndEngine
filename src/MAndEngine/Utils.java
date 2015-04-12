@@ -1,7 +1,7 @@
 package MAndEngine;
 
 public class Utils {
-	public static int rand(int i, int j) {
-		return (int)(Math.random()*(j - i) + i);
+	public static int rand(int low, int high) {
+		return (int)(Math.random() * (high - low + 1) + low);
 	}
 }

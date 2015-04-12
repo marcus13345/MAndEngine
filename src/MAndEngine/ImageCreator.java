@@ -99,7 +99,7 @@ public class ImageCreator {
 		double power = width > height ? width : height;
 		power *= 2;
 		power = (int) (log(2, power) + .5);
-		//not my code hell if i know how it works
+		//not my code
 		final int DATA_SIZE = (int) Math.pow(2, power) + 1;
 		final double SEED = 1000.0;
 		double[][] data = new double[DATA_SIZE][DATA_SIZE];
@@ -147,7 +147,10 @@ public class ImageCreator {
 		}
 		for (int i = 0; i < DATA_SIZE; i++) {
 			for (int j = 0; j < DATA_SIZE; j++) {
-				img.setRGB(i, j, (0xFF000000) | ((int) (((data[i][j] - min) / (max - min)) * 255) << 16) | ((int) (((data[i][j] - min) / (max - min)) * 255) << 8) | ((int) (((data[i][j] - min) / (max - min)) * 255)));
+				img.setRGB(i, j, (0xFF000000) | 
+					((int) (((data[i][j] - min) / (max - min)) * 255) << 16) | 
+					((int) (((data[i][j] - min) / (max - min)) * 255) << 8) | 
+					((int) (((data[i][j] - min) / (max - min)) * 255) << 0));
 			}
 		}
 		for (int i = 0; i < DATA_SIZE; i++) {
@@ -162,7 +165,6 @@ public class ImageCreator {
 		BufferedImage _return = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 		_return.getGraphics().drawImage(img, 0 - (img.getWidth() / 8), 0 - (img.getHeight() / 8), null);
 		return _return;
-
 	}
 
 	private static double log(double b, double x) {

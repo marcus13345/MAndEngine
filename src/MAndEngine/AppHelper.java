@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * also a bit of an app helper class thing
- * well... i renamed it so, now it just is an app helper class thing.
+ * this class is a jack of all trades when it comes to information about apps.
+ * it can tell you things about apps and as well, initialize a list of them
+ * so that you can later use them in your main menu app!
+ * 
  * @author Marcus
  *
  */

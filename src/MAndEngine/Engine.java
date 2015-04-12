@@ -22,6 +22,13 @@ import javax.swing.*;
 public class Engine extends Canvas implements KeyListener, MouseMotionListener, MouseListener, ContainerListener, ComponentListener {
 
 	/**
+	 * 
+	 */
+	private static double tickTime = 0;
+	public static double timeScale = 1;
+	public static double deltaTime = 0;
+	
+	/**
 	 * to track the x and y
 	 */
 	public static int mouseX = 0, mouseY = 0;
@@ -43,18 +50,10 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	private static AppHelper appInitializer;
 
 	/**
-	 * AER WE SUPER SPEEDING?!?!?
-	 */
-	private static boolean overclock = false;
-
-	/**
-	 * current framerate and time required to sleep to achieve that framerate.
-	 */
-	private static int frameSync = 50, sleepTime = 1000 / frameSync;
-
-	/**
 	 * variables to track the fps, DON'T WORRY ABOUT IT, PAST YOU HAS YOU
 	 * COVERED.
+	 * present me here, im trusting you. and since i just implemented a way to have
+	 * like 100k fps, thanks man for doing this right.
 	 */
 	private static int framesInCurrentSecond = 0, FPS = 0;
 
@@ -82,6 +81,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * IN CFG.
 	 */
 	private static int WIDTH = 800, HEIGHT = 600, app = 0;
+	public  static int BUFFER_WIDTH = 800, BUFFER_HEIGHT = 600;
 
 	/**
 	 * this bit is important. its the array of apps that we reference later on.
@@ -128,23 +128,32 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	/**
 	 * the main Main object but staticed so we can like use it from that static
-	 * context. its not final because its static but don't change it.
+	 * context. its not final because its static but don't change it.<br/>
+	 * public until i figure out how to work with the changing resolution.
 	 */
-	private static Engine staticMain;
+	public static Engine staticMain;
 
 	/**
 	 * debug level.
 	 */
-	public static int debug = 0;
+	public static int debug = 2;
 
+	/**
+	 * because retina support
+	 */
+	private static boolean retina;
+	
 	/**
 	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT. because this is a
 	 * static engine, yeah
+	 * @param retina 
 	 */
-	public Engine(String[] classes, boolean showLoading) {
+	public Engine(String[] classes, boolean showLoading, boolean retina) {
 
 		// frame.setVisible(true);
 
+		this.retina = retina;
+		
 		// set static object
 		staticMain = this;
 
@@ -164,7 +173,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		frame.addContainerListener(this);
 		frame.addComponentListener(this);
 
-		requestFocus();
+		//requestFocus();
 
 		if (showLoading)
 			frame.setVisible(true);
@@ -191,7 +200,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		switchApps(0);
 
-		createBuffer();
+		
 
 	}
 
@@ -204,6 +213,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		frame.setVisible(true);
 
+		long nanos = System.nanoTime();
+		
 		// now we do stuff.
 		while (running) {
 			// FPS STUFF WORRY NOT, ITS ALL GOOD. MOVE ALONG.
@@ -215,29 +226,21 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			}
 			framesInCurrentSecond++;
 
-			// tick stuff
-			tick();
-			// paint the same stuff
 			repaint();
-
-			// FRAMERATE OVERCLOCKING AND SUCH, MOVE ALONG.
-			try {
-				if (!overclock)
-					Thread.sleep((long) Math.floor(sleepTime - (System.currentTimeMillis() - startTime)));
-				else
-					Thread.sleep(0);
-				lag = false;
-			} catch (Exception e) {
-				lag = true;
-			}
+			tick();
+			tickTime = (System.nanoTime() - nanos)/1000d;
+			deltaTime = tickTime * timeScale;
+			nanos = System.nanoTime();
+			
+			//no sleeping because we now operate on delta time.
 		}
 	}
 
 	/**
 	 * makes a buffer and stuff, called with new windows and things. MOVE ALONG
 	 */
-	private static void createBuffer() {
-		buffer = (new BufferedImage(WIDTH, HEIGHT, BufferedImage.TRANSLUCENT));
+	private void createBuffer() {
+		buffer = (new BufferedImage(BUFFER_WIDTH, BUFFER_HEIGHT, BufferedImage.TRANSLUCENT));
 		g2 = (Graphics2D) buffer.getGraphics();
 	}
 
@@ -248,14 +251,15 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	public void update(Graphics g) {
 		// Graphics g2 = buffer.getGraphics();
 
+		/*
 		if (buffer.getWidth() != WIDTH || buffer.getHeight() != HEIGHT) {
 			System.out.println("bork " + buffer.getWidth());
 			System.out.println("bork " + WIDTH);
 			createBuffer();
 		}
-
+*/
 		paint(g2);
-		g.drawImage(buffer, 0, 0, null);
+		g.drawImage(buffer, 0, 0, WIDTH, HEIGHT, null);
 	}
 
 	/**
@@ -266,21 +270,12 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 */
 	public static boolean switchApps(int i) {
 		try {
-			log("pausing " + apps[app].getTitle());
 			apps[app].pauseApp();
 			app = i;
-			log("initializing " + apps[app].getTitle());
-			apps[app].initialize();
-			log("resuming " + apps[app].getTitle());
-			apps[app].resumeApp();
-			log("setting window properties");
 			setWindowProperties(apps[app]);
-			log("Started up " + apps[app].getTitle());
-
-			frame.pack();
-
-			// because we now use the ONE buffer system... yeah
-			// lets do something about thaaaaaaaaat...
+			apps[app].initialize();
+			apps[app].resumeApp();
+			Engine.frame.requestFocus();
 
 			return true;
 
@@ -296,7 +291,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param app
 	 */
 	private static void setWindowProperties(BasicApp app) {
-		setWindowProperties(app.getResolution(), app.getFramerate(), app.getResizable());
+		setWindowProperties(app.getResolution(), app.getResizable());
 	}
 
 	/**
@@ -306,16 +301,19 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param fps
 	 * @param resizable
 	 */
-	private static void setWindowProperties(Dimension dimension, int fps, boolean resizable) {
+	private static void setWindowProperties(Dimension dimension, boolean resizable) {
 		frame.setResizable(resizable);
 		staticMain.setSize(dimension);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		WIDTH = dimension.width;
 		HEIGHT = dimension.height;
-		setFramerate(fps);
 		frame.setResizable(resizable);
-
+		BUFFER_HEIGHT = HEIGHT*(retina?2:1);
+		BUFFER_WIDTH = WIDTH*(retina?2:1);
+		apps[app].updateDimensions(BUFFER_WIDTH, BUFFER_HEIGHT);
+		staticMain.createBuffer();
+		frame.pack();
 	}
 
 	public void paint(Graphics g) {// oh.....
@@ -348,17 +346,10 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			// show fps if debug level high enough
 			if (debug > 0)
 				g.drawString("FPS: " + FPS, 20, 20);
-			if (overclock)
-				g.drawString("Overclocking!", 20, 35);
 			g.setColor(Color.RED);
 			if (lag)
 				g.fillOval(10, 10, 10, 10);
 
-			g.setColor(Color.WHITE);
-			if (debug > 0)
-				if (!(log.size() == 0))
-					for (int i = log.size() - 1; i >= 0; i--)
-						log.elementAt(i).render(g, WIDTH - 200, HEIGHT - 10 - (i * 12));
 		} catch (Exception e) {
 			g.setFont(largerFont);
 			g.setColor(Color.BLACK);
@@ -376,32 +367,12 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 	private void tick() {
 		apps[app].tick();
-		for (int i = 0; i < log.size(); i++)
-			log.elementAt(i).tick();
-
-		int i = 0;
-		while (i < log.size()) {
-			if (!log.elementAt(i).getAlive())
-				log.remove(i);
-			else
-				i++;
-		}
-
-		while (log.size() > 10) {
-			log.pop();
-		}
-	}
-
-	public static void log(String s) {
-		log.insertElementAt(new LogItem(s, 100), 0);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		apps[app].keyPressed(e);
-		if (e.getKeyCode() == KeyEvent.VK_O && keys[KeyEvent.VK_CONTROL]) {
-			overclock = !overclock;
-		}
+		
 		keys[e.getKeyCode()] = true;
 	}
 
@@ -420,43 +391,44 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		System.exit(0);
 	}
 
-	private static void setFramerate(int fps) {
-		frameSync = fps;
-		sleepTime = 1000 / frameSync;
-	}
-
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
+		updateMouse(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
+		updateMouse(e);
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent e) {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		mouse = true;
+	public void mousePressed(MouseEvent e) {
+		updateMouse(e);
 		apps[app].click();
+		mouse = true;
+	}
+	
+	private void updateMouse(MouseEvent e) {
+		mouseX = (int)(((double)e.getX() / WIDTH)*BUFFER_WIDTH);
+		mouseY = (int)(((double)e.getY() / HEIGHT)*BUFFER_HEIGHT);
+		mouse = false;
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent e) {
+		updateMouse(e);
 		mouse = false;
 	}
 
@@ -487,8 +459,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	@Override
 	public void componentResized(ComponentEvent e) {
 		setSize(getPreferredSize());
-		System.out.println("HEIGHT: " + HEIGHT);
-		System.out.println("WIDTH:  " + WIDTH);
 		WIDTH = getSize().width;
 		HEIGHT = getSize().height;
 		createBuffer();
