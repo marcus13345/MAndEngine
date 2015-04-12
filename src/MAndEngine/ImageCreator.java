@@ -168,4 +168,25 @@ public class ImageCreator {
 	private static double log(double b, double x) {
 		return Math.log(x) / Math.log(b);
 	}
+	
+	public static BufferedImage colorNoise(int r, int g, int b, double multMin, double multMax, int width, int height) {
+
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics graphics = image.getGraphics();
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				double k = Math.random() * (multMax - multMin) + multMin;
+				graphics.setColor(new Color((int) (r * k), (int) (g * k), (int) (b * k)));
+				graphics.fillRect(i, j, 1, 1);
+			}
+		}
+
+		return image;
+
+	}
+
+	public static Image colorNoise(Color c, double d, double i, int width, int height) {
+		return colorNoise(c.getRed(), c.getGreen(), c.getBlue(), d, i, width, height);
+	}
 }
