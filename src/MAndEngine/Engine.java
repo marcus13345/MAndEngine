@@ -52,6 +52,8 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * variables to track the fps, DON'T WORRY ABOUT IT, PAST YOU HAS YOU
 	 * COVERED.
+	 * present me here, im trusting you. and since i just implemented a way to have
+	 * like 100k fps, thanks man for doing this right.
 	 */
 	private static int framesInCurrentSecond = 0, FPS = 0;
 
@@ -139,7 +141,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * because retina support
 	 */
-	private final boolean retina;
+	private static boolean retina;
 	
 	/**
 	 * SRSLY CALL DYS ONCE. DAS IT. ALL YOU GET. ONE SHOT. because this is a
@@ -171,7 +173,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		frame.addContainerListener(this);
 		frame.addComponentListener(this);
 
-		requestFocus();
+		//requestFocus();
 
 		if (showLoading)
 			frame.setVisible(true);
@@ -198,9 +200,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 
 		switchApps(0);
 
-		BUFFER_HEIGHT = HEIGHT*(retina?2:1);
-		BUFFER_WIDTH = WIDTH*(retina?2:1);
-		createBuffer();
+		
 
 	}
 
@@ -270,14 +270,12 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 */
 	public static boolean switchApps(int i) {
 		try {
+			apps[app].pauseApp();
 			app = i;
 			setWindowProperties(apps[app]);
-			apps[app].updateDimensions(BUFFER_WIDTH, BUFFER_HEIGHT);
-
-			frame.pack();
-
-			// because we now use the ONE buffer system... yeah
-			// lets do something about thaaaaaaaaat...
+			apps[app].initialize();
+			apps[app].resumeApp();
+			Engine.frame.requestFocus();
 
 			return true;
 
@@ -311,7 +309,11 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		WIDTH = dimension.width;
 		HEIGHT = dimension.height;
 		frame.setResizable(resizable);
-
+		BUFFER_HEIGHT = HEIGHT*(retina?2:1);
+		BUFFER_WIDTH = WIDTH*(retina?2:1);
+		apps[app].updateDimensions(BUFFER_WIDTH, BUFFER_HEIGHT);
+		staticMain.createBuffer();
+		frame.pack();
 	}
 
 	public void paint(Graphics g) {// oh.....

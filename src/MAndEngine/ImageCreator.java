@@ -191,7 +191,7 @@ public class ImageCreator {
 
 	}
 
-	public static Image colorNoise(Color c, double d, double i, int width,
+	public static BufferedImage colorNoise(Color c, double d, double i, int width,
 			int height) {
 		return colorNoise(c.getRed(), c.getGreen(), c.getBlue(), d, i, width,
 				height);
