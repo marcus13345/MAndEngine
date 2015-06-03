@@ -136,7 +136,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	/**
 	 * debug level.
 	 */
-	public static int debug = 2;
+	public static int debug = 0;
 
 	/**
 	 * because retina support
