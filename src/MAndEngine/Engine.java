@@ -307,7 +307,6 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 	 * @param resizable
 	 */
 	private static void setWindowProperties(Dimension dimension, boolean resizable) {
-		frame.setResizable(resizable);
 		staticMain.setSize(dimension);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -318,6 +317,7 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 		BUFFER_WIDTH = WIDTH*(retina?2:1);
 		apps[app].updateDimensions(BUFFER_WIDTH, BUFFER_HEIGHT);
 		staticMain.createBuffer();
+		frame.setResizable(resizable);
 		frame.pack();
 	}
 
