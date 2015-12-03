@@ -233,6 +233,11 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			nanos = System.nanoTime();
 			
 			//no sleeping because we now operate on delta time.
+			//future marcus is amazed at your lack of comprehension here
+			//you see, by unlocking fps you render a good 2M fps...
+			//wasted power, so much wasted power.
+			//TODO remake the past marcus' system... man.
+			try{Thread.sleep(60);}catch(Exception e){}
 		}
 	}
 
@@ -344,9 +349,9 @@ public class Engine extends Canvas implements KeyListener, MouseMotionListener, 
 			g.setColor(Color.WHITE);
 
 			// show fps if debug level high enough
+			g.setColor(Color.RED);
 			if (debug > 0)
 				g.drawString("FPS: " + FPS, 20, 20);
-			g.setColor(Color.RED);
 			if (lag)
 				g.fillOval(10, 10, 10, 10);
 
